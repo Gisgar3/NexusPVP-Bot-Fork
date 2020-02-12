@@ -9,6 +9,8 @@ const net = require("net");
 const fs = require("fs");
 const readline = require("linebyline");
 
+const mainServerID = "652677735566540830";
+
 // Checks if the tokens.json file exists on a new install, and also checks to see if a valid bot_token string exists in the file
 if (fs.existsSync("./tokens.json") == true) {
     // Adds a global variable leading to the "./tokens.json" file
@@ -49,8 +51,8 @@ bot.on('message', (msg) => {
                 let username = msg.author.username;
                 let embed = new Discord.RichEmbed()
                     .setColor(0x0712e8)
-                    .setThumbnail("https://cdn.discordapp.com/attachments/333438353620074496/661101268483440650/image0.jpg")
-                    .setImage("https://cdn.discordapp.com/attachments/307715783146995713/661102080328466466/image0.png");
+                    .setThumbnail("")
+                    .setImage("");
                 for (i = 0; i < commands.valid_command_identifiers.length; i++) {
                     embed.addField(commands.valid_command_identifiers[i], commands.valid_command_definitions[i]);
                 }
@@ -78,7 +80,7 @@ let rl = readline(process.stdin);
 rl.on("line", (input) => {
     if (input.toString() == "/nexus fetchAudits") {
         bot.guilds.forEach((guild) => {
-            if (guild.id == "652677735566540830") {
+            if (guild.id == mainServerID) {
                 guild.fetchAuditLogs().then((audit) => console.log(audit.entries.last()));
                 
             }
@@ -87,4 +89,29 @@ rl.on("line", (input) => {
     if (input.toString() == "/nexus clear") {
         console.clear();
     }
+    if (input.toString().startsWith("/nexus ban ")) {
+        let parameters = input.toString().slice(11);
+
+        bot.guilds.get(mainServerID).members.forEach((member) => {
+            if (member.id == parameters) {
+                guild.ban(member);
+            }
+            else {
+                console.log("User does not exist.");
+            }
+        });
+    }
+    if (input.toString().startsWith("/nexus kick ")) {
+        let parameters = input.toString().slice(12);
+
+        bot.guilds.get(mainServerID).members.forEach((member) => {
+            if (member.id == parameters) {
+                guild.kick(member);
+            }
+            else {
+                console.log("User does not exist.");
+            }
+        });
+    }
+    
 });
